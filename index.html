@@ -2806,6 +2806,182 @@
             opacity: 0.8;
             transform: translateY(-1px);
         }
+
+        /* Voice Profile Description Toggle */
+        .profile-description-toggle {
+            margin-top: 4px;
+        }
+
+        .see-description {
+            color: #6366f1;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .see-description:hover {
+            color: #5855eb;
+        }
+
+        .profile-description {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f3f4f6;
+            animation: slideDown 0.3s ease;
+        }
+
+        .profile-description p {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 200px;
+            }
+        }
+
+        /* Voice Profile Modal Styles */
+        .voice-profile-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1002;
+        }
+
+        .modal-header {
+            padding: 24px 24px 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .close-modal-btn {
+            background: #f3f4f6;
+            border: none;
+            color: #6b7280;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal-btn:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .modal-content {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 0 24px 24px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -2815,6 +2991,96 @@
                 <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
             </svg>
             Brand Kit
+        </div>
+
+        <!-- Edit Voice Profile Modal -->
+        <div id="editVoiceProfileModal" class="voice-profile-modal" style="display: none;">
+            <div class="modal-overlay" onclick="closeEditVoiceProfile()"></div>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2 id="editProfileTitle">Edit Voice Profile</h2>
+                    <button class="close-modal-btn" onclick="closeEditVoiceProfile()">✕</button>
+                </div>
+                <div class="modal-content">
+                    <form id="editVoiceProfileForm">
+                        <div class="form-group">
+                            <label for="editProfileName">Profile Name</label>
+                            <input type="text" id="editProfileName" class="form-input" readonly style="background: #f3f4f6;">
+                        </div>
+                        <div class="form-group">
+                            <label for="editProfileDescription">Description</label>
+                            <textarea id="editProfileDescription" class="form-textarea" rows="4" placeholder="Describe the communication style and personality..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editProfileTone">Tone & Style</label>
+                                <input type="text" id="editProfileTone" class="form-input" placeholder="e.g., Professional, Confident">
+                            </div>
+                            <div class="form-group">
+                                <label for="editProfileAudience">Target Audience</label>
+                                <input type="text" id="editProfileAudience" class="form-input" placeholder="e.g., Business Leaders, Developers">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProfileKeywords">Key Characteristics</label>
+                            <textarea id="editProfileKeywords" class="form-textarea" rows="2" placeholder="List key communication characteristics, separated by commas..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProfileExamples">Example Phrases</label>
+                            <textarea id="editProfileExamples" class="form-textarea" rows="3" placeholder="Add example phrases or sentences that represent this voice..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeEditVoiceProfile()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveVoiceProfileChanges()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Voice Profile Modal -->
+        <div id="addVoiceProfileModal" class="voice-profile-modal" style="display: none;">
+            <div class="modal-overlay" onclick="closeAddVoiceProfile()"></div>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>Add New Voice Profile</h2>
+                    <button class="close-modal-btn" onclick="closeAddVoiceProfile()">✕</button>
+                </div>
+                <div class="modal-content">
+                    <form id="addVoiceProfileForm">
+                        <div class="form-group">
+                            <label for="newProfileName">Profile Name</label>
+                            <input type="text" id="newProfileName" class="form-input" placeholder="e.g., Marketing Director, Customer Support">
+                        </div>
+                        <div class="form-group">
+                            <label for="newProfileDescription">Description</label>
+                            <textarea id="newProfileDescription" class="form-textarea" rows="4" placeholder="Describe the communication style and personality..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newProfileTone">Tone & Style</label>
+                                <input type="text" id="newProfileTone" class="form-input" placeholder="e.g., Professional, Confident">
+                            </div>
+                            <div class="form-group">
+                                <label for="newProfileAudience">Target Audience</label>
+                                <input type="text" id="newProfileAudience" class="form-input" placeholder="e.g., Business Leaders, Developers">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newProfileKeywords">Key Characteristics</label>
+                            <textarea id="newProfileKeywords" class="form-textarea" rows="2" placeholder="List key communication characteristics, separated by commas..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="newProfileExamples">Example Phrases</label>
+                            <textarea id="newProfileExamples" class="form-textarea" rows="3" placeholder="Add example phrases or sentences that represent this voice..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeAddVoiceProfile()">Cancel</button>
+                    <button class="btn btn-primary" onclick="createVoiceProfile()">Create Profile</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3183,61 +3449,7 @@
                 </div>
 
                 <div id="analyticsTab" class="details-tab-content" style="display: none;">
-                    <!-- Voice Profile Add/Edit Modal -->
-        <div id="voiceProfileModal" class="voice-profile-modal" style="display: none;">
-            <div class="modal-overlay" onclick="closeVoiceProfileModal()"></div>
-            <div class="modal-container">
-                <div class="modal-header">
-                    <h2 id="modalTitle">Add Voice Profile</h2>
-                    <button class="modal-close-btn" onclick="closeVoiceProfileModal()">✕</button>
-                </div>
-                
-                <div class="modal-content">
-                    <div class="form-section">
-                        <div class="form-group">
-                            <label for="profileNameInput">Profile Name *</label>
-                            <input type="text" id="profileNameInput" placeholder="e.g., Steve Jobs" class="form-input">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="profileDescInput">Description *</label>
-                            <textarea id="profileDescInput" placeholder="Describe the personality, communication style, and characteristics of this voice profile..." class="form-textarea"></textarea>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="profileToneInput">Tone & Style *</label>
-                                <input type="text" id="profileToneInput" placeholder="e.g., Bold, Visionary, Direct" class="form-input">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="profileAudienceInput">Target Audience *</label>
-                                <input type="text" id="profileAudienceInput" placeholder="e.g., Developers, Business Leaders" class="form-input">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="profileKeywordsInput">Key Terms & Keywords</label>
-                            <input type="text" id="profileKeywordsInput" placeholder="innovation, leadership, technology, transformation..." class="form-input">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Voice Sample (Optional)</label>
-                            <div class="voice-sample-area">
-                                <textarea placeholder="Write a sample paragraph in this voice to help train the AI..." class="form-textarea"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" onclick="closeVoiceProfileModal()">Cancel</button>
-                    <button class="btn btn-primary" id="modalAction" onclick="saveVoiceProfile()">Create Profile</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="analytics-dashboard">
+                    <div class="analytics-dashboard">
                         <div class="analytics-header">
                             <h3>Brand Analytics</h3>
                             <div class="time-range-selector">
@@ -4585,7 +4797,12 @@
                     <div class="profile-card-header">
                         <div class="profile-card-title">
                             <h4>${profile.name}</h4>
-                            <p>${profile.description}</p>
+                            <div class="profile-description-toggle">
+                                <span class="see-description" onclick="toggleDescription('${profile.name.replace(/[^a-zA-Z0-9]/g, '')}')">see description</span>
+                            </div>
+                            <div class="profile-description" id="desc-${profile.name.replace(/[^a-zA-Z0-9]/g, '')}" style="display: none;">
+                                <p>${profile.description}</p>
+                            </div>
                         </div>
                         <div class="profile-actions">
                             <button class="profile-btn" onclick="editVoiceProfile('${profile.name}')">Edit</button>
@@ -4735,15 +4952,163 @@
 
         // Voice Profile Actions
         function addVoiceProfile() {
-            alert('Add Voice Profile dialog would open here');
+            document.getElementById('addVoiceProfileModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Clear form
+            document.getElementById('addVoiceProfileForm').reset();
         }
 
         function editVoiceProfile(profileName) {
-            alert(`Edit ${profileName} profile dialog would open here`);
+            // Get profile data
+            const profilesData = {
+                'tech-ceos': [
+                    {
+                        name: 'Jensen Huang',
+                        description: 'The visionary NVIDIA CEO with technical mastery, AI evangelism, and future-focused communication. Jensen Huang combines deep engineering knowledge with passionate advocacy for accelerated computing, communicating with energetic conviction about GPU computing and AI transformation.',
+                        tone: 'Technical, Passionate, Visionary',
+                        audience: 'Developers, Tech Industry',
+                        keywords: 'AI, GPU computing, acceleration, innovation, future technology',
+                        examples: 'The future is accelerated computing. Our revolutionary GPU architecture enables breakthrough AI applications.'
+                    },
+                    {
+                        name: 'Elon Musk',
+                        description: 'The maverick entrepreneur with bold vision, direct communication, and erratic brilliance. Elon Musk combines transformational leadership with unconventional methods, communicating ambitious goals and impossible dreams with infectious enthusiasm and sometimes controversial candor.',
+                        tone: 'Bold, Direct, Unconventional',
+                        audience: 'Innovators, Future-focused',
+                        keywords: 'Mars, sustainable transport, rapid iteration, revolutionary, bold decisions',
+                        examples: 'We\'re going to Mars. The impossible is just another Tuesday. Let\'s build the future.'
+                    },
+                    {
+                        name: 'Tim Cook',
+                        description: 'The calm and collaborative Apple CEO with democratic leadership, empathetic communication, and values-driven approach. Tim Cook combines operational excellence with inclusive vision, communicating with quiet consideration and steady commitment to privacy, sustainability, and human dignity.',
+                        tone: 'Calm, Values-driven, Democratic',
+                        audience: 'Consumers, Stakeholders',
+                        keywords: 'privacy, human rights, values, inclusive, sustainability',
+                        examples: 'Privacy is a fundamental human right. We believe technology should serve humanity.'
+                    }
+                ],
+                'avengers': [
+                    {
+                        name: 'Hulk (Bruce Banner)',
+                        description: 'The incredible green giant with simple, direct communication and raw emotional power. As Bruce Banner, he\'s brilliant but anxious; as the Hulk, he speaks with child-like simplicity, focusing on basic emotions and immediate needs with immense conviction.',
+                        tone: 'Simple, Direct, Emotionally Powerful',
+                        audience: 'General Public, Children',
+                        keywords: 'protect, strongest, smash, friends, simple, direct',
+                        examples: 'Hulk protect! Hulk strongest there is! Bad guys hurt people, Hulk stop them.'
+                    },
+                    {
+                        name: 'Captain America (Steve Rogers)',
+                        description: 'The First Avenger and living symbol of American values with unwavering moral conviction, natural leadership, and earnest communication. Steve Rogers speaks with integrity, respect, and the straightforward honesty of a true soldier and leader.',
+                        tone: 'Moral, Leadership-focused, Earnest',
+                        audience: 'Team Members, Citizens',
+                        keywords: 'honor, courage, sacrifice, justice, united, values',
+                        examples: 'We stand together as one team. Every challenge is an opportunity to do what\'s right.'
+                    },
+                    {
+                        name: 'Spider-Man (Peter Parker)',
+                        description: 'Your friendly neighborhood web-slinger with youthful energy, quick wit, and constant wisecracks. Spider-Man combines scientific curiosity with relentless optimism and humor, always ready with a quip while fighting crime and protecting the little guy.',
+                        tone: 'Youthful, Witty, Optimistic',
+                        audience: 'Young People, Community',
+                        keywords: 'responsibility, friendly, neighborhood, quips, optimism',
+                        examples: 'With great power comes great responsibility! Your friendly neighborhood Spider-Man here!'
+                    }
+                ]
+            };
+
+            // Find the profile
+            let profile = null;
+            const allProfiles = [...(profilesData['tech-ceos'] || []), ...(profilesData['avengers'] || [])];
+            profile = allProfiles.find(p => p.name === profileName);
+
+            if (profile) {
+                // Populate form
+                document.getElementById('editProfileTitle').textContent = `Edit ${profile.name}`;
+                document.getElementById('editProfileName').value = profile.name;
+                document.getElementById('editProfileDescription').value = profile.description;
+                document.getElementById('editProfileTone').value = profile.tone;
+                document.getElementById('editProfileAudience').value = profile.audience;
+                document.getElementById('editProfileKeywords').value = profile.keywords;
+                document.getElementById('editProfileExamples').value = profile.examples;
+
+                // Show modal
+                document.getElementById('editVoiceProfileModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function testVoiceProfile(profileName) {
-            alert(`Test ${profileName} in playground`);
+            // Set the voice profile in playground context
+            currentTestProfile = profileName;
+            
+            // Open playground
+            document.getElementById('playgroundModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Update playground title
+            const playgroundTitle = document.querySelector('.playground-title h2');
+            playgroundTitle.textContent = `🎮 Testing ${profileName}`;
+            
+            // Set the voice profile in the dropdown
+            const voiceSelect = document.getElementById('voiceProfile');
+            if (voiceSelect) {
+                // Find and select the matching option
+                for (let option of voiceSelect.options) {
+                    if (option.textContent === profileName) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        function toggleDescription(profileId) {
+            const descElement = document.getElementById(`desc-${profileId}`);
+            const toggleElement = document.querySelector(`[onclick="toggleDescription('${profileId}')"]`);
+            
+            if (descElement.style.display === 'none') {
+                descElement.style.display = 'block';
+                toggleElement.textContent = 'hide description';
+            } else {
+                descElement.style.display = 'none';
+                toggleElement.textContent = 'see description';
+            }
+        }
+
+        function closeEditVoiceProfile() {
+            document.getElementById('editVoiceProfileModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeAddVoiceProfile() {
+            document.getElementById('addVoiceProfileModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function saveVoiceProfileChanges() {
+            // In a real app, this would save to the backend
+            const profileName = document.getElementById('editProfileName').value;
+            alert(`Voice profile "${profileName}" updated successfully!`);
+            closeEditVoiceProfile();
+            
+            // Refresh the voice profiles display
+            populateVoiceProfiles(currentBrandKitId);
+        }
+
+        function createVoiceProfile() {
+            const profileName = document.getElementById('newProfileName').value;
+            
+            if (!profileName.trim()) {
+                alert('Please enter a profile name');
+                return;
+            }
+            
+            // In a real app, this would save to the backend
+            alert(`Voice profile "${profileName}" created successfully!`);
+            closeAddVoiceProfile();
+            
+            // Refresh the voice profiles display
+            populateVoiceProfiles(currentBrandKitId);
         }
 
         // Time range selector for analytics
